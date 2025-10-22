@@ -1,26 +1,34 @@
 const express = require('express');
+const createUserRouter = require('./userRoutes');
+const createAuthRouter = require('./authRoutes');
+const createTherapistRouter = require('./therapistRoutes');
 
 /**
  * Factory function to create the main application router.
- * @param {object} dependencies - The dependencies for the main router.
- * @param {function} dependencies.createUserRouter - Factory function for user routes.
- * @param {function} dependencies.createAuthRouter - Factory function for auth routes.
- * @param {object} dependencies.userController - The user controller instance.
- * @param {object} dependencies.authController - The auth controller instance.
- * @param {function} dependencies.protect - The protect middleware.
- * @param {function} dependencies.authorize - The authorize middleware.
+ * @param {object} container - The dependency injection container.
  * @returns {express.Router} The configured main router.
  */
-const createMainRouter = ({ createUserRouter, createAuthRouter, userController, authController, protect, authorize }) => {
+const createMainRouter = (container) => {
   const router = express.Router();
+
+  // Destructure all needed components from the container
+  const {
+    userController,
+    authController,
+    therapistController,
+    protect,
+    authorize,
+  } = container;
 
   // Create sub-routers using their factory functions and injected dependencies
   const userRouter = createUserRouter({ userController, protect, authorize });
   const authRouter = createAuthRouter({ authController, protect });
+  const therapistRouter = createTherapistRouter({ therapistController, protect, authorize });
 
   // Mount sub-routers
-  router.use('/users', userRouter);
   router.use('/auth', authRouter);
+  router.use('/users', userRouter);
+  router.use('/therapists', therapistRouter);
 
   return router;
 };

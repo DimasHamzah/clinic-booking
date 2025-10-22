@@ -1,4 +1,4 @@
-const { body, validationResult } = require('express-validator');
+const { body, param, validationResult } = require('express-validator');
 
 // Middleware to handle validation errors from express-validator
 const handleValidationErrors = (req, res, next) => {
@@ -48,10 +48,31 @@ const changeEmailValidator = [
   handleValidationErrors,
 ];
 
+// Validation rules for creating a therapist
+const createTherapistValidator = [
+  body('userId', 'User ID is required and must be an integer.').isInt({ min: 1 }),
+  body('specialization', 'Specialization is required and cannot be empty.').notEmpty().trim(),
+  body('rating', 'Rating must be a float between 0 and 5.').optional().isFloat({ min: 0, max: 5 }),
+  body('isActive', 'isActive must be a boolean.').optional().isBoolean().toBoolean(),
+  handleValidationErrors,
+];
+
+// Validation rules for updating a therapist
+const updateTherapistValidator = [
+  body('specialization', 'Specialization cannot be empty.').optional().notEmpty().trim(),
+  body('rating', 'Rating must be a float between 0 and 5.').optional().isFloat({ min: 0, max: 5 }),
+  body('isActive', 'isActive must be a boolean.').optional().isBoolean().toBoolean(),
+  // Ensure userId cannot be updated directly via this endpoint
+  body('userId', 'User ID cannot be updated directly.').not().exists(),
+  handleValidationErrors,
+];
+
 module.exports = {
   createUserValidator,
   signInValidator,
   forgotPasswordValidator,
   resetPasswordValidator,
   changeEmailValidator,
+  createTherapistValidator,
+  updateTherapistValidator,
 };

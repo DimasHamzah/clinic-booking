@@ -1,35 +1,27 @@
-
+'use strict';
 const { Model, DataTypes } = require('sequelize');
 const bcrypt = require('bcryptjs');
-const crypto = require('crypto'); // Import crypto for token generation
+const crypto = require('crypto');
 
 module.exports = (sequelize) => {
   class User extends Model {
-    // Instance method to check password
     validatePassword(password) {
       return bcrypt.compareSync(password, this.password);
     }
 
-    // Instance method to generate and hash password reset token
     getResetPasswordToken() {
-      // Generate token
       const resetToken = crypto.randomBytes(20).toString('hex');
-
-      // Hash token and set to passwordResetToken field
-      this.passwordResetToken = crypto
-        .createHash('sha256')
-        .update(resetToken)
-        .digest('hex');
-
-      // Set expire time (e.g., 10 minutes)
+      this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
       this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
-
-      return resetToken; // Return the unhashed token to be sent via email
+      return resetToken;
     }
 
-    // Static method to associate models
     static associate(models) {
-      // define association here if any
+      // A user can have one therapist profile
+      User.hasOne(models.Therapist, {
+        foreignKey: 'userId',
+        as: 'therapistProfile',
+      });
     }
   }
 
@@ -76,7 +68,7 @@ module.exports = (sequelize) => {
     },
     phoneNumber: {
       type: DataTypes.STRING,
-      allowNull: true, // Assuming phone number is optional
+      allowNull: true,
     },
     displayName: {
       type: DataTypes.STRING,
@@ -108,7 +100,7 @@ module.exports = (sequelize) => {
     sequelize,
     modelName: 'User',
     tableName: 'users',
-    timestamps: true, // This will add createdAt and updatedAt fields
+    timestamps: true,
     hooks: {
       beforeCreate: async (user) => {
         if (user.password) {
