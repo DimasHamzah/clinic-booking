@@ -4,10 +4,6 @@ const swaggerDefinition = {
     title: 'Beauty Clinic API',
     version: '1.0.0',
     description: 'A clean, robust, and well-documented API for the Beauty Clinic application.',
-    contact: {
-      name: 'API Support',
-      email: 'support@example.com',
-    },
   },
   servers: [
     {
@@ -16,26 +12,14 @@ const swaggerDefinition = {
     },
   ],
   tags: [
-    {
-      name: 'Authentication',
-      description: 'User authentication, authorization, and password management.',
-    },
-    {
-      name: 'Users',
-      description: 'User management and retrieval (Protected).',
-    },
-    {
-      name: 'Therapists',
-      description: 'Therapist profile management (Admin Only).',
-    },
+    { name: 'Authentication', description: 'User authentication and password management.' },
+    { name: 'Users', description: 'User management (Protected).' },
+    { name: 'Therapists', description: 'Therapist profile management (Admin Only).' },
+    { name: 'Services', description: 'Clinic service management (Admin Only).' },
   ],
   components: {
     securitySchemes: {
-      bearerAuth: {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-      },
+      bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
     },
     schemas: {
       // --- User Schemas ---
@@ -46,8 +30,7 @@ const swaggerDefinition = {
           username: { type: 'string', example: 'johndoe' },
           email: { type: 'string', example: 'john.doe@example.com' },
           displayName: { type: 'string', example: 'John Doe' },
-          role: { type: 'string', enum: ['CUSTOMER', 'STAFF', 'ADMIN'], example: 'CUSTOMER' },
-          phoneNumber: { type: 'string', nullable: true, example: '081234567890' },
+          role: { type: 'string', enum: ['CUSTOMER', 'STAFF', 'ADMIN'] },
         },
       },
       CreateUser: {
@@ -72,11 +55,11 @@ const swaggerDefinition = {
       TherapistProfile: {
         type: 'object',
         properties: {
-          id: { type: 'integer', example: 1 },
-          userId: { type: 'integer', example: 2 },
-          specialization: { type: 'string', example: 'Facial Treatment' },
-          rating: { type: 'number', format: 'float', example: 4.8 },
-          isActive: { type: 'boolean', example: true },
+          id: { type: 'integer' },
+          userId: { type: 'integer' },
+          specialization: { type: 'string' },
+          rating: { type: 'number', format: 'float' },
+          isActive: { type: 'boolean' },
           user: { $ref: '#/components/schemas/User' },
         },
       },
@@ -84,16 +67,48 @@ const swaggerDefinition = {
         type: 'object',
         required: ['userId', 'specialization'],
         properties: {
-          userId: { type: 'integer', description: 'The ID of the user to be made a therapist.', example: 2 },
-          specialization: { type: 'string', example: 'Aromatherapy' },
+          userId: { type: 'integer' },
+          specialization: { type: 'string' },
         },
       },
       UpdateTherapist: {
         type: 'object',
         properties: {
-          specialization: { type: 'string', example: 'Deep Tissue Massage' },
-          rating: { type: 'number', format: 'float', example: 4.9 },
-          isActive: { type: 'boolean', example: false },
+          specialization: { type: 'string' },
+          rating: { type: 'number', format: 'float' },
+          isActive: { type: 'boolean' },
+        },
+      },
+      // --- Service Schemas ---
+      Service: {
+        type: 'object',
+        properties: {
+          id: { type: 'integer' },
+          name: { type: 'string' },
+          description: { type: 'string' },
+          duration_minutes: { type: 'integer' },
+          price: { type: 'number', format: 'float' },
+          isActive: { type: 'boolean' },
+        },
+      },
+      CreateService: {
+        type: 'object',
+        required: ['name', 'description', 'duration_minutes', 'price'],
+        properties: {
+          name: { type: 'string' },
+          description: { type: 'string' },
+          duration_minutes: { type: 'integer' },
+          price: { type: 'number', format: 'float' },
+        },
+      },
+      UpdateService: {
+        type: 'object',
+        properties: {
+          name: { type: 'string' },
+          description: { type: 'string' },
+          duration_minutes: { type: 'integer' },
+          price: { type: 'number', format: 'float' },
+          isActive: { type: 'boolean' },
         },
       },
     },
@@ -125,131 +140,35 @@ const swaggerDefinition = {
         responses: { '200': { description: 'Password has been reset successfully.' }, '400': { description: 'Bad Request (invalid token or password too short).' } },
       },
     },
-
-    // --- User Paths (Protected) ---
+    // --- User Paths ---
     '/users': {
-      get: {
-        tags: ['Users'],
-        summary: 'Retrieve a list of users',
-        security: [{ bearerAuth: [] }],
-        parameters: [{ in: 'query', name: 'page', schema: { type: 'integer', default: 1 } }, { in: 'query', name: 'limit', schema: { type: 'integer', default: 10 } }],
-        responses: { '200': { description: 'A list of users.' }, '401': { description: 'Not authorized.' }, '403': { description: 'Forbidden.' } },
-      },
-      post: {
-        tags: ['Users'],
-        summary: 'Create a new user',
-        security: [{ bearerAuth: [] }],
-        requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/CreateUser' } } } },
-        responses: { '201': { description: 'User created successfully.' }, '400': { description: 'Bad Request (validation failed).' }, '401': { description: 'Not authorized.' }, '403': { description: 'Forbidden.' }, '409': { description: 'Conflict (username or email already exists).' } },
-      },
+      get: { tags: ['Users'], summary: 'Retrieve a list of users', security: [{ bearerAuth: [] }], responses: { '200': { description: 'A list of users.' } } },
+      post: { tags: ['Users'], summary: 'Create a new user', security: [{ bearerAuth: [] }], requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/CreateUser' } } } }, responses: { '201': { description: 'User created successfully.' } } },
     },
     '/users/{id}': {
-      get: {
-        tags: ['Users'],
-        summary: 'Get a user by ID',
-        security: [{ bearerAuth: [] }],
-        parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
-        responses: { '200': { description: 'User data.' }, '401': { description: 'Not authorized.' }, '403': { description: 'Forbidden.' }, '404': { description: 'User not found.' } },
-      },
-      put: {
-        tags: ['Users'],
-        summary: 'Update a user by ID',
-        security: [{ bearerAuth: [] }],
-        parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
-        requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/UpdateUser' } } } },
-        responses: { '200': { description: 'User updated successfully.' }, '401': { description: 'Not authorized.' }, '403': { description: 'Forbidden.' }, '404': { description: 'User not found.' } },
-      },
-      delete: {
-        tags: ['Users'],
-        summary: 'Delete a user by ID',
-        security: [{ bearerAuth: [] }],
-        parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
-        responses: { '204': { description: 'User deleted successfully.' }, '401': { description: 'Not authorized.' }, '403': { description: 'Forbidden.' }, '404': { description: 'User not found.' } },
-      },
+      get: { tags: ['Users'], summary: 'Get a user by ID', security: [{ bearerAuth: [] }], parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }], responses: { '200': { description: 'User data.' } } },
+      put: { tags: ['Users'], summary: 'Update a user by ID', security: [{ bearerAuth: [] }], parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }], requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/UpdateUser' } } } }, responses: { '200': { description: 'User updated successfully.' } } },
+      delete: { tags: ['Users'], summary: 'Delete a user by ID', security: [{ bearerAuth: [] }], parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }], responses: { '204': { description: 'User deleted successfully.' } } },
     },
-
-    // --- Therapist Paths (Admin Only) ---
+    // --- Therapist Paths ---
     '/therapists': {
-      get: {
-        tags: ['Therapists'],
-        summary: 'Retrieve a list of all therapist profiles',
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          { in: 'query', name: 'page', schema: { type: 'integer', default: 1 } },
-          { in: 'query', name: 'limit', schema: { type: 'integer', default: 10 } },
-        ],
-        responses: {
-          '200': { description: 'A list of therapist profiles.' },
-          '401': { description: 'Not authorized.' },
-          '403': { description: 'Forbidden. Admin access required.' },
-        },
-      },
-      post: {
-        tags: ['Therapists'],
-        summary: 'Create a new therapist profile for a user',
-        security: [{ bearerAuth: [] }],
-        requestBody: {
-          required: true,
-          content: { 'application/json': { schema: { $ref: '#/components/schemas/CreateTherapist' } } },
-        },
-        responses: {
-          '201': { description: 'Therapist profile created successfully.' },
-          '400': { description: 'Bad Request (validation failed).' },
-          '401': { description: 'Not authorized.' },
-          '403': { description: 'Forbidden. Admin access required.' },
-          '404': { description: 'User to be made a therapist not found.' },
-          '409': { description: 'Conflict (User is already a therapist).' },
-        },
-      },
+      get: { tags: ['Therapists'], summary: 'Retrieve a list of all therapist profiles', security: [{ bearerAuth: [] }], responses: { '200': { description: 'A list of therapist profiles.' } } },
+      post: { tags: ['Therapists'], summary: 'Create a new therapist profile for a user', security: [{ bearerAuth: [] }], requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/CreateTherapist' } } } }, responses: { '201': { description: 'Therapist profile created successfully.' } } },
     },
     '/therapists/{id}': {
-      get: {
-        tags: ['Therapists'],
-        summary: 'Get a single therapist profile by ID',
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          { in: 'path', name: 'id', required: true, schema: { type: 'integer' } },
-        ],
-        responses: {
-          '200': { description: 'Therapist profile data.' },
-          '401': { description: 'Not authorized.' },
-          '403': { description: 'Forbidden. Admin access required.' },
-          '404': { description: 'Therapist profile not found.' },
-        },
-      },
-      put: {
-        tags: ['Therapists'],
-        summary: 'Update a therapist profile',
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          { in: 'path', name: 'id', required: true, schema: { type: 'integer' } },
-        ],
-        requestBody: {
-          required: true,
-          content: { 'application/json': { schema: { $ref: '#/components/schemas/UpdateTherapist' } } },
-        },
-        responses: {
-          '200': { description: 'Therapist profile updated successfully.' },
-          '400': { description: 'Bad Request (validation failed).' },
-          '401': { description: 'Not authorized.' },
-          '403': { description: 'Forbidden. Admin access required.' },
-          '404': { description: 'Therapist profile not found.' },
-        },
-      },
-      delete: {
-        tags: ['Therapists'],
-        summary: 'Delete a therapist profile',
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          { in: 'path', name: 'id', required: true, schema: { type: 'integer' } },
-        ],
-        responses: {
-          '204': { description: 'Therapist profile deleted successfully.' },
-          '401': { description: 'Not authorized.' },
-          '403': { description: 'Forbidden. Admin access required.' },
-          '404': { description: 'Therapist profile not found.' },
-        },
-      },
+      get: { tags: ['Therapists'], summary: 'Get a single therapist profile by ID', security: [{ bearerAuth: [] }], parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }], responses: { '200': { description: 'Therapist profile data.' } } },
+      put: { tags: ['Therapists'], summary: 'Update a therapist profile', security: [{ bearerAuth: [] }], parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }], requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/UpdateTherapist' } } } }, responses: { '200': { description: 'Therapist profile updated successfully.' } } },
+      delete: { tags: ['Therapists'], summary: 'Delete a therapist profile', security: [{ bearerAuth: [] }], parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }], responses: { '204': { description: 'Therapist profile deleted successfully.' } } },
+    },
+    // --- Service Paths ---
+    '/services': {
+      get: { tags: ['Services'], summary: 'Retrieve a list of all services', security: [{ bearerAuth: [] }], responses: { '200': { description: 'A list of services.' } } },
+      post: { tags: ['Services'], summary: 'Create a new service', security: [{ bearerAuth: [] }], requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/CreateService' } } } }, responses: { '201': { description: 'Service created successfully.' } } },
+    },
+    '/services/{id}': {
+      get: { tags: ['Services'], summary: 'Get a single service by ID', security: [{ bearerAuth: [] }], parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }], responses: { '200': { description: 'Service data.' } } },
+      put: { tags: ['Services'], summary: 'Update a service', security: [{ bearerAuth: [] }], parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }], requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/UpdateService' } } } }, responses: { '200': { description: 'Service updated successfully.' } } },
+      delete: { tags: ['Services'], summary: 'Delete a service', security: [{ bearerAuth: [] }], parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }], responses: { '204': { description: 'Service deleted successfully.' } } },
     },
   },
 };
