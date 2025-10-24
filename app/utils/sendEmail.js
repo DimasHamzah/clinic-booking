@@ -1,4 +1,4 @@
-const logger = require('../config/logger');
+const logger = require("../config/logger");
 
 /**
  * A mock email sending function.
@@ -11,18 +11,18 @@ const logger = require('../config/logger');
  */
 const sendEmail = async (options) => {
   // This is a mock. It logs the email to the console instead of sending it.
-  logger.info('---- Sending Email ----');
+  logger.info("---- Sending Email ----");
   logger.info(`To: ${options.to}`);
   logger.info(`Subject: ${options.subject}`);
   if (options.text) {
-    logger.info('Body (text):');
+    logger.info("Body (text):");
     logger.info(options.text);
   }
   if (options.html) {
-    logger.info('Body (html):');
+    logger.info("Body (html):");
     logger.info(options.html);
   }
-  logger.info('-----------------------');
+  logger.info("-----------------------");
 
   // In a real implementation, you would return information from the email provider.
   // For this mock, we'll just resolve to indicate success.

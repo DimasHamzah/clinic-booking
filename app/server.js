@@ -1,16 +1,16 @@
 // Load environment variables first
-require('dotenv').config();
+require("dotenv").config();
 
 // Import factory functions
-const createApp = require('./app');
-const createMainRouter = require('./routes');
+const createApp = require("./app");
+const createMainRouter = require("./routes");
 
 // Import other necessary components for app creation
-const errorHandler = require('./middleware/errorHandler');
-const swaggerSpec = require('./config/swagger');
+const errorHandler = require("./middleware/errorHandler");
+const swaggerSpec = require("./config/swagger");
 
 // Import the DI container which holds all instantiated components
-const container = require('./container');
+const container = require("./container");
 
 const { logger, db } = container;
 
@@ -27,15 +27,16 @@ const app = createApp({ mainRouter, errorHandler, logger, swaggerSpec });
 const PORT = process.env.PORT || 3000;
 
 // Sync Sequelize models with the database and then start the server
-db.sequelize.sync()
+db.sequelize
+  .sync()
   .then(() => {
-    logger.info('Database synced successfully.');
+    logger.info("Database synced successfully.");
     app.listen(PORT, () => {
       logger.info(`Server running on port ${PORT}`);
-      logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      logger.info(`Environment: ${process.env.NODE_ENV || "development"}`);
     });
   })
-  .catch(err => {
-    logger.error('Failed to sync database:', err.message);
+  .catch((err) => {
+    logger.error("Failed to sync database:", err.message);
     process.exit(1);
   });

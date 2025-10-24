@@ -1,9 +1,9 @@
-const express = require('express');
-const helmet = require('helmet');
-const cors = require('cors');
-const morgan = require('morgan');
-const dotenv = require('dotenv');
-const swaggerUi = require('swagger-ui-express');
+const express = require("express");
+const helmet = require("helmet");
+const cors = require("cors");
+const morgan = require("morgan");
+const dotenv = require("dotenv");
+const swaggerUi = require("swagger-ui-express");
 
 // Load environment variables
 dotenv.config();
@@ -33,21 +33,21 @@ const createApp = ({ mainRouter, errorHandler, logger, swaggerSpec }) => {
   app.use(express.urlencoded({ extended: true }));
 
   // HTTP request logger middleware (using morgan and our custom logger)
-  app.use(morgan('combined', { stream: logger.stream }));
+  app.use(morgan("combined", { stream: logger.stream }));
 
   // --- API Documentation Route ---
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   // --- API Routes ---
 
   // Mount the main router
-  app.use('/api/v1', mainRouter);
+  app.use("/api/v1", mainRouter);
 
   // --- Health Check Route ---
-  app.get('/', (req, res) => {
-    res.status(200).json({ 
-      status: 'UP', 
-      message: 'Beauty Clinic API is running.' 
+  app.get("/", (req, res) => {
+    res.status(200).json({
+      status: "UP",
+      message: "Beauty Clinic API is running.",
     });
   });
 
@@ -55,7 +55,7 @@ const createApp = ({ mainRouter, errorHandler, logger, swaggerSpec }) => {
 
   // Handle 404 errors for routes not found
   app.use((req, res, next) => {
-    const error = new Error('Not Found');
+    const error = new Error("Not Found");
     error.statusCode = 404;
     next(error);
   });

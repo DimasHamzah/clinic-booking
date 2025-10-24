@@ -1,4 +1,5 @@
 const AuthService = require('../../services/authService');
+// eslint-disable-next-line no-unused-vars
 const crypto = require('crypto');
 
 // --- Mock Dependencies ---

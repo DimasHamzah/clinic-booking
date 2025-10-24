@@ -7,20 +7,25 @@ class ServiceService {
   async createService(serviceData) {
     this.logger.info(`Creating a new service: ${serviceData.name}`);
     const newService = await this.serviceRepository.create(serviceData);
-    this.logger.info(`Service "${newService.name}" created successfully with ID: ${newService.id}`);
+    this.logger.info(
+      `Service "${newService.name}" created successfully with ID: ${newService.id}`,
+    );
     return newService;
   }
 
   async getAllServices(options) {
-    this.logger.info('Retrieving all services.');
-    return await this.serviceRepository.findAll(options);
+    this.logger.info("Retrieving all services.");
+    const result = await this.serviceRepository.findAll(options);
+    return result;
   }
 
   async getServiceById(id) {
     this.logger.info(`Retrieving service with ID: ${id}`);
     const service = await this.serviceRepository.findById(id);
     if (!service) {
-      this.logger.warn(`Service with ID ${id} not found.`);
+      const error = new Error("Service not found.");
+      error.statusCode = 404;
+      throw error;
     }
     return service;
   }
@@ -29,8 +34,7 @@ class ServiceService {
     this.logger.info(`Updating service with ID: ${id}`);
     const updatedService = await this.serviceRepository.update(id, updateData);
     if (!updatedService) {
-      this.logger.warn(`Update failed: Service with ID ${id} not found.`);
-      const error = new Error('Service not found.');
+      const error = new Error("Service not found.");
       error.statusCode = 404;
       throw error;
     }
@@ -42,8 +46,7 @@ class ServiceService {
     this.logger.info(`Attempting to delete service with ID: ${id}`);
     const deletedRows = await this.serviceRepository.delete(id);
     if (deletedRows === 0) {
-      this.logger.warn(`Deletion failed: Service with ID ${id} not found.`);
-      const error = new Error('Service not found.');
+      const error = new Error("Service not found.");
       error.statusCode = 404;
       throw error;
     }
