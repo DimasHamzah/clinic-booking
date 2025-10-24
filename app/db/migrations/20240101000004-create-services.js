@@ -1,50 +1,50 @@
-'use strict';
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, _Sequelize) { // eslint-disable-line no-unused-vars
-    await queryInterface.createTable('services', {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable("services", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: _Sequelize.INTEGER,
+        type: Sequelize.INTEGER,
       },
       name: {
-        type: _Sequelize.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       description: {
-        type: _Sequelize.TEXT,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       duration_minutes: {
-        type: _Sequelize.INTEGER,
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
       price: {
-        type: _Sequelize.DECIMAL(10, 2),
+        type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
       isActive: {
-        type: _Sequelize.BOOLEAN,
+        type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: true,
       },
       createdAt: {
         allowNull: false,
-        type: _Sequelize.DATE,
-        defaultValue: _Sequelize.literal('CURRENT_TIMESTAMP'),
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
       updatedAt: {
         allowNull: false,
-        type: _Sequelize.DATE,
-        defaultValue: _Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal(
+          "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+        ),
       },
     });
   },
 
-  async down(queryInterface, _Sequelize) { // eslint-disable-line no-unused-vars
-    await queryInterface.dropTable('services');
+  async down(queryInterface) {
+    await queryInterface.dropTable("services");
   },
 };
