@@ -32,7 +32,7 @@ const authService = new AuthService({ userRepository, logger, sendEmail, jwt });
 const userService = new UserService({ userRepository, logger });
 const therapistService = new TherapistService({ therapistRepository, userRepository, logger });
 const serviceService = new ServiceService({ serviceRepository, logger });
-const scheduleService = new ScheduleService({ scheduleRepository, logger });
+const scheduleService = new ScheduleService({ scheduleRepository, therapistRepository, logger }); // Updated dependencies
 
 const authController = new AuthController({ authService, sendSuccess });
 const userController = new UserController({ userService, sendSuccess });
