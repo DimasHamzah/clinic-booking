@@ -10,7 +10,7 @@
   "test": {
     "username": "root",
     "password": "",
-    "database": "beauty_clinic_test",
+    "database": "beauty_clinic_dev",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "logging": false

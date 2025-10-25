@@ -1,18 +1,20 @@
-const { Model, DataTypes } = require("sequelize");
+'use strict';
+const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   class Therapist extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       // A therapist profile belongs to a single user
       Therapist.belongsTo(models.User, {
-        foreignKey: "userId",
-        as: "user",
-        onDelete: "CASCADE", // If a user is deleted, their therapist profile is also deleted
+        foreignKey: 'userId',
+        as: 'user',
+        onDelete: 'CASCADE',
+      });
+
+      // A therapist can have many schedules
+      Therapist.hasMany(models.Schedule, {
+        foreignKey: 'therapistId',
+        as: 'schedules',
       });
     }
   }
@@ -27,17 +29,17 @@ module.exports = (sequelize) => {
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        unique: true, // Enforces the one-to-one relationship
+        unique: true,
         references: {
-          model: "users", // table name
-          key: "id",
+          model: 'users',
+          key: 'id',
         },
       },
       specialization: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          notEmpty: { msg: "Specialization cannot be empty." },
+          notEmpty: { msg: 'Specialization cannot be empty.' },
         },
       },
       rating: {
@@ -57,9 +59,9 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      modelName: "Therapist",
-      tableName: "therapists",
-      timestamps: true, // Adds createdAt and updatedAt
+      modelName: 'Therapist',
+      tableName: 'therapists',
+      timestamps: true,
     },
   );
 

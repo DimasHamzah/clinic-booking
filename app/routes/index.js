@@ -1,46 +1,33 @@
-const express = require("express");
-const createUserRouter = require("./userRoutes");
-const createAuthRouter = require("./authRoutes");
-const createTherapistRouter = require("./therapistRoutes");
-const createServiceRouter = require("./serviceRoutes");
+const express = require('express');
+const createUserRouter = require('./userRoutes');
+const createAuthRouter = require('./authRoutes');
+const createTherapistRouter = require('./therapistRoutes');
+const createServiceRouter = require('./serviceRoutes');
+const createScheduleRouter = require('./scheduleRoutes');
 
-/**
- * Factory function to create the main application router.
- * @param {object} container - The dependency injection container.
- * @returns {express.Router} The configured main router.
- */
 const createMainRouter = (container) => {
   const router = express.Router();
 
-  // Destructure all needed components from the container
-  const {
-    userController,
-    authController,
-    therapistController,
-    serviceController,
-    protect,
-    authorize,
+  const { 
+    authController, 
+    userController, 
+    therapistController, 
+    serviceController, 
+    scheduleController, 
+    ...rest 
   } = container;
 
-  // Create sub-routers using their factory functions and injected dependencies
-  const authRouter = createAuthRouter({ authController, protect });
-  const userRouter = createUserRouter({ userController, protect, authorize });
-  const therapistRouter = createTherapistRouter({
-    therapistController,
-    protect,
-    authorize,
-  });
-  const serviceRouter = createServiceRouter({
-    serviceController,
-    protect,
-    authorize,
-  });
+  const authRouter = createAuthRouter({ authController, ...rest });
+  const userRouter = createUserRouter({ userController, ...rest });
+  const therapistRouter = createTherapistRouter({ therapistController, ...rest });
+  const serviceRouter = createServiceRouter({ serviceController, ...rest });
+  const scheduleRouter = createScheduleRouter({ scheduleController, ...rest });
 
-  // Mount sub-routers
-  router.use("/auth", authRouter);
-  router.use("/users", userRouter);
-  router.use("/therapists", therapistRouter);
-  router.use("/services", serviceRouter);
+  router.use('/auth', authRouter);
+  router.use('/users', userRouter);
+  router.use('/therapists', therapistRouter);
+  router.use('/services', serviceRouter);
+  router.use('/schedules', scheduleRouter);
 
   return router;
 };
