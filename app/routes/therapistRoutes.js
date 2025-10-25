@@ -1,7 +1,9 @@
 const express = require('express');
 const { therapistValidators } = require('../middleware/validators');
 
-const createTherapistRouter = ({ therapistController, protect, authorize }) => {
+const createTherapistRouter = (container) => {
+  const { therapistController, protect, authorize } = container;
+
   const router = express.Router();
 
   router.use(protect);

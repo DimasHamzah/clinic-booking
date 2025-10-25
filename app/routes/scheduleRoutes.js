@@ -1,7 +1,9 @@
 const express = require('express');
 const { scheduleValidators } = require('../middleware/validators');
 
-const createScheduleRouter = ({ scheduleController, protect, authorize }) => {
+const createScheduleRouter = (container) => {
+  const { scheduleController, protect, authorize } = container;
+
   const router = express.Router();
 
   router.use(protect);

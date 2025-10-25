@@ -1,7 +1,11 @@
 const express = require('express');
 const { authValidators } = require('../middleware/validators');
 
-const createAuthRouter = ({ authController, protect }) => {
+// This factory now accepts the whole container
+const createAuthRouter = (container) => {
+  // Destructure the required components from the container
+  const { authController, protect } = container;
+
   const router = express.Router();
 
   router.post('/signin', authValidators.signIn, authController.signIn);

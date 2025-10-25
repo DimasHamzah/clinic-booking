@@ -1,7 +1,9 @@
 const express = require('express');
 const { userValidators } = require('../middleware/validators');
 
-const createUserRouter = ({ userController, protect, authorize }) => {
+const createUserRouter = (container) => {
+  const { userController, protect, authorize } = container;
+
   const router = express.Router();
 
   router.use(protect);

@@ -34,7 +34,7 @@ describe('TherapistService', () => {
       await therapistService.createTherapist(therapistData);
 
       expect(mockUserRepository.findById).toHaveBeenCalledWith(1);
-      expect(mockTherapistRepository.create).toHaveBeenCalledWith({ userId: 1, specialization: 'Facials' });
+      expect(mockTherapistRepository.create).toHaveBeenCalledWith(therapistData);
     });
 
     it('should throw a 404 error if the user does not exist', async () => {

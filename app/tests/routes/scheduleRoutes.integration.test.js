@@ -19,8 +19,20 @@ describe('Schedule API Integration Tests', () => {
   beforeAll(async () => {
     await db.sequelize.sync({ force: true });
 
-    const admin = await db.User.create({ username: 'admin', email: 'admin@test.com', password: 'password', role: 'ADMIN' });
-    const therapistUser = await db.User.create({ username: 'therapist', email: 'therapist@test.com', password: 'password' });
+    // Add displayName to fix the notNull violation
+    await db.User.create({ 
+      username: 'admin', 
+      email: 'admin@test.com', 
+      password: 'password', 
+      role: 'ADMIN',
+      displayName: 'Admin User' 
+    });
+    const therapistUser = await db.User.create({ 
+      username: 'therapist', 
+      email: 'therapist@test.com', 
+      password: 'password',
+      displayName: 'Therapist User'
+    });
     const therapist = await db.Therapist.create({ userId: therapistUser.id, specialization: 'Massage' });
     therapistId = therapist.id;
 
