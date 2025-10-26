@@ -1,24 +1,26 @@
-const TherapistRepository = require('../../repositories/therapistRepository');
-const db = require('../../db/models');
+const TherapistRepository = require("../../repositories/therapistRepository");
+const db = require("../../db/models");
 
-process.env.NODE_ENV = 'test';
+process.env.NODE_ENV = "test";
 
-describe('TherapistRepository - Integration Test', () => {
+describe("TherapistRepository - Integration Test", () => {
   let therapistRepository;
   let testUser;
 
   beforeAll(async () => {
-    therapistRepository = new TherapistRepository({ therapistModel: db.Therapist });
+    therapistRepository = new TherapistRepository({
+      therapistModel: db.Therapist,
+    });
     await db.sequelize.sync({ force: true });
   });
 
   beforeEach(async () => {
     // Create a fresh user for each test to ensure isolation
     testUser = await db.User.create({
-      username: 'therapistuser',
-      email: 'therapist@example.com',
-      password: 'password123',
-      displayName: 'Therapist User',
+      username: "therapistuser",
+      email: "therapist@example.com",
+      password: "password123",
+      displayName: "Therapist User",
     });
   });
 
@@ -32,10 +34,10 @@ describe('TherapistRepository - Integration Test', () => {
     await db.sequelize.close();
   });
 
-  it('should create a therapist profile successfully', async () => {
+  it("should create a therapist profile successfully", async () => {
     const therapistData = {
       userId: testUser.id,
-      specialization: 'Massage Therapy',
+      specialization: "Massage Therapy",
     };
     const createdTherapist = await therapistRepository.create(therapistData);
     expect(createdTherapist).toBeDefined();

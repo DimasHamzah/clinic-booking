@@ -1,4 +1,4 @@
-const UserService = require('../../services/userService');
+const UserService = require("../../services/userService");
 
 const mockUserRepository = {
   findByUsername: jest.fn(),
@@ -21,25 +21,32 @@ const userService = new UserService({
   logger: mockLogger,
 });
 
-describe('UserService', () => {
+describe("UserService", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('createUser', () => {
-    it('should throw an error if username already exists', async () => {
-      const userData = { username: 'existinguser' };
-      mockUserRepository.findByUsername.mockResolvedValue({ id: 1, username: 'existinguser' });
+  describe("createUser", () => {
+    it("should throw an error if username already exists", async () => {
+      const userData = { username: "existinguser" };
+      mockUserRepository.findByUsername.mockResolvedValue({
+        id: 1,
+        username: "existinguser",
+      });
 
-      await expect(userService.createUser(userData)).rejects.toThrow('Username already exists.');
+      await expect(userService.createUser(userData)).rejects.toThrow(
+        "Username already exists.",
+      );
       expect(mockUserRepository.create).not.toHaveBeenCalled();
     });
   });
 
-  describe('getUserById', () => {
-    it('should throw an error if user not found', async () => {
+  describe("getUserById", () => {
+    it("should throw an error if user not found", async () => {
       mockUserRepository.findById.mockResolvedValue(null);
-      await expect(userService.getUserById(999)).rejects.toThrow('User not found.');
+      await expect(userService.getUserById(999)).rejects.toThrow(
+        "User not found.",
+      );
     });
   });
 });

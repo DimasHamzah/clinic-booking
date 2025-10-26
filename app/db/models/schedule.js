@@ -1,13 +1,12 @@
-'use strict';
-const { Model, DataTypes } = require('sequelize');
+const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   class Schedule extends Model {
     static associate(models) {
       Schedule.belongsTo(models.Therapist, {
-        foreignKey: 'therapistId',
-        as: 'therapist',
-        onDelete: 'CASCADE',
+        foreignKey: "therapistId",
+        as: "therapist",
+        onDelete: "CASCADE",
       });
     }
   }
@@ -23,8 +22,8 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'therapists',
-          key: 'id',
+          model: "therapists",
+          key: "id",
         },
       },
       availableDate: {
@@ -47,8 +46,8 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      modelName: 'Schedule',
-      tableName: 'schedules',
+      modelName: "Schedule",
+      tableName: "schedules",
       timestamps: true,
     },
   );

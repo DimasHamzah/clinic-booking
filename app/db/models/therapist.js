@@ -1,20 +1,19 @@
-'use strict';
-const { Model, DataTypes } = require('sequelize');
+const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   class Therapist extends Model {
     static associate(models) {
       // A therapist profile belongs to a single user
       Therapist.belongsTo(models.User, {
-        foreignKey: 'userId',
-        as: 'user',
-        onDelete: 'CASCADE',
+        foreignKey: "userId",
+        as: "user",
+        onDelete: "CASCADE",
       });
 
       // A therapist can have many schedules
       Therapist.hasMany(models.Schedule, {
-        foreignKey: 'therapistId',
-        as: 'schedules',
+        foreignKey: "therapistId",
+        as: "schedules",
       });
     }
   }
@@ -31,15 +30,15 @@ module.exports = (sequelize) => {
         allowNull: false,
         unique: true,
         references: {
-          model: 'users',
-          key: 'id',
+          model: "users",
+          key: "id",
         },
       },
       specialization: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          notEmpty: { msg: 'Specialization cannot be empty.' },
+          notEmpty: { msg: "Specialization cannot be empty." },
         },
       },
       rating: {
@@ -59,8 +58,8 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      modelName: 'Therapist',
-      tableName: 'therapists',
+      modelName: "Therapist",
+      tableName: "therapists",
       timestamps: true,
     },
   );

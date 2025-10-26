@@ -1,4 +1,4 @@
-const ServiceService = require('../../services/serviceService');
+const ServiceService = require("../../services/serviceService");
 
 const mockServiceRepository = {
   findById: jest.fn(),
@@ -14,15 +14,17 @@ const serviceService = new ServiceService({
   logger: mockLogger,
 });
 
-describe('ServiceService', () => {
+describe("ServiceService", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('getServiceById', () => {
-    it('should throw an error if service not found', async () => {
+  describe("getServiceById", () => {
+    it("should throw an error if service not found", async () => {
       mockServiceRepository.findById.mockResolvedValue(null);
-      await expect(serviceService.getServiceById(999)).rejects.toThrow('Service not found.');
+      await expect(serviceService.getServiceById(999)).rejects.toThrow(
+        "Service not found.",
+      );
     });
   });
 });
